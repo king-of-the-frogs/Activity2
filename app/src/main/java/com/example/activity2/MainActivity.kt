@@ -2,33 +2,40 @@ package com.example.activity2
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.activity2.fragments.FragmentMain
-import com.example.activity2.fragments.FragmentSecond
+import com.example.activity2.fragments.FragmentA
+import com.example.activity2.fragments.FragmentB
 
-class MainActivity: AppCompatActivity(), Communicator {
+class MainActivity : AppCompatActivity(), Communicator {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val fragmentMain = FragmentMain()
-
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container,fragmentMain)
+        // Создание и добавление FragmentA в контейнер
+        val fragmentA = FragmentA()
+        supportFragmentManager.beginTransaction()
+            .add(R.id.container, fragmentA)
             .commit()
-
     }
 
-    override fun passData(nameData: String,secondData: String,emailData: String) {
+    // Реализация метода интерфейса Communicator для передачи данных от FragmentA к FragmentB
+    override fun passData(name: String, email: String) {
         val bundle = Bundle()
-        bundle.putString("name", nameData)
-        bundle.putString("second", secondData)
-        bundle.putString("email", emailData)
+        bundle.putString("name", name)
+        bundle.putString("email", email)
 
-        val transaction = this.supportFragmentManager.beginTransaction()
-        val fragmentSecond = FragmentSecond()
+        val fragmentB = FragmentB()
+        fragmentB.arguments = bundle
 
-        fragmentSecond.arguments = bundle
-
-        transaction.replace(R.id.fragment_container, fragmentSecond)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, fragmentB)
+            .addToBackStack(null)
             .commit()
     }
+
+    fun clearDataInFragmentA() {
+        val fragmentA = supportFragmentManager.findFragmentById(R.id.container) as? FragmentA
+        fragmentA?.clearData()
+    }
+
 }
