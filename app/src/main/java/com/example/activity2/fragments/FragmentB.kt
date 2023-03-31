@@ -1,45 +1,51 @@
 package com.example.activity2.fragments
 
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.example.activity2.Communicator
-import com.example.activity2.MainActivity
 import com.example.activity2.R
 
-class FragmentB : Fragment() {
+class FragmentB(bundle: Bundle) : Fragment(R.layout.fragment_b) {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_b, container, false)
+    private lateinit var tvName: TextView
+    private lateinit var tvSecond: TextView
+    private lateinit var tvEmail: TextView
+    private var btnDel: Button? = null
+    private var name: String? = null
+    private var second: String? = null
+    private var email: String? = null
 
-        val tvName = view.findViewById<TextView>(R.id.tvName)
-        val tvEmail = view.findViewById<TextView>(R.id.tvEmail)
-        val btnDel = view.findViewById<Button>(R.id.btnDel)
-        val bundle = arguments
-        if (bundle != null) {
-            val name = bundle.getString("name")
-            val email = bundle.getString("email")
-
-            tvName.text = name
-            tvEmail.text = email
-        }
-
-        btnDel.setOnClickListener {
-            val fragmentA = requireActivity().supportFragmentManager.findFragmentById(R.id.fragmentA) as FragmentA
-            fragmentA.clearData()
-        }
-
-        return view
+    init {
+        name = bundle.getString("name")
+        second = bundle.getString("second")
+        email = bundle.getString("email")
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        tvName = requireView().findViewById(R.id.tvName)
+        tvSecond = requireView().findViewById(R.id.tvSecond)
+        tvEmail = requireView().findViewById(R.id.tvEmail)
+        btnDel = requireView().findViewById(R.id.btnDel)
+
+        btnDel?.setOnClickListener {
+            name = null
+            second = null
+            email = null
+            showData()
+        }
+
+        showData()
+    }
+
+
+    private fun showData() {
+        tvName.text = name ?: ""
+        tvSecond.text = second ?: ""
+        tvEmail.text = email ?: ""
+    }
 
 }

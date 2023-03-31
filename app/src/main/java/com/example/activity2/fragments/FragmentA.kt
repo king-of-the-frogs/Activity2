@@ -1,44 +1,36 @@
 package com.example.activity2.fragments
 
-import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import com.example.activity2.Communicator
+import androidx.fragment.app.Fragment
 import com.example.activity2.R
 
-class FragmentA : Fragment() {
+class FragmentA : Fragment(R.layout.fragment_a) {
 
-    private lateinit var communicator: Communicator
-    private lateinit var edName: EditText
-    private lateinit var edEmail: EditText
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_a, container, false)
+        val edName: EditText = requireActivity().findViewById(R.id.edName)
+        val edSecond: EditText = requireActivity().findViewById(R.id.edSecond)
+        val edEmail: EditText = requireActivity().findViewById(R.id.edEmail)
+        val btnNext: Button = requireActivity().findViewById(R.id.btnNext)
 
-        edName = view.findViewById(R.id.edName)
-        edEmail = view.findViewById(R.id.edEmail)
-
-        val btnNext: Button = view.findViewById(R.id.btnNext)
         btnNext.setOnClickListener {
-            communicator.passData(edName.text.toString(), edEmail.text.toString())
+            if (edName.text.toString().isNotEmpty() &&
+                edSecond.text.toString().isNotEmpty() &&
+                edEmail.text.toString().isNotEmpty()
+            ) {
+                val bundle = Bundle().apply {
+                    putString("name", edName.text.toString())
+                    putString("second", edSecond.text.toString())
+                    putString("email", edEmail.text.toString())
+                }
+                parentFragmentManager.beginTransaction().replace(R.id.container, FragmentB(bundle))
+                    .commit()
+            }
         }
 
-        return view
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        communicator = context as Communicator
-    }
-
-    fun clearData() {
-        edName.text.clear()
-        edEmail.text.clear()
     }
 }
