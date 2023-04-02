@@ -36,6 +36,8 @@ class FragmentB(bundle: Bundle) : Fragment(R.layout.fragment_b) {
             second = null
             email = null
             showData()
+            parentFragmentManager.beginTransaction().replace(R.id.container, FragmentA())
+                .commit()
         }
 
         showData()
